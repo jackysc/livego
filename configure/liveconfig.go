@@ -40,40 +40,44 @@ type JWT struct {
 	Algorithm string `mapstructure:"algorithm"`
 }
 type ServerCfg struct {
-	Level           string       `mapstructure:"level"`
-	ConfigFile      string       `mapstructure:"config_file"`
-	FLVArchive      bool         `mapstructure:"flv_archive"`
-	FLVDir          string       `mapstructure:"flv_dir"`
-	RTMPNoAuth      bool         `mapstructure:"rtmp_noauth"`
-	RTMPAddr        string       `mapstructure:"rtmp_addr"`
-	HTTPFLVAddr     string       `mapstructure:"httpflv_addr"`
-	HLSAddr         string       `mapstructure:"hls_addr"`
-	HLSKeepAfterEnd bool         `mapstructure:"hls_keep_after_end"`
-	APIAddr         string       `mapstructure:"api_addr"`
-	RedisAddr       string       `mapstructure:"redis_addr"`
-	RedisPwd        string       `mapstructure:"redis_pwd"`
-	ReadTimeout     int          `mapstructure:"read_timeout"`
-	WriteTimeout    int          `mapstructure:"write_timeout"`
-	EnableTLSVerify bool         `mapstructure:"enable_tls_verify"`
-	GopNum          int          `mapstructure:"gop_num"`
-	JWT             JWT          `mapstructure:"jwt"`
-	Server          Applications `mapstructure:"server"`
+	Level            string       `mapstructure:"level"`
+	ConfigFile       string       `mapstructure:"config_file"`
+	FLVArchive       bool         `mapstructure:"flv_archive"`
+	FLVDir           string       `mapstructure:"flv_dir"`
+	RTMPNoAuth       bool         `mapstructure:"rtmp_noauth"`
+	RTMPAddr         string       `mapstructure:"rtmp_addr"`
+	HTTPFLVAddr      string       `mapstructure:"httpflv_addr"`
+	HLSAddr          string       `mapstructure:"hls_addr"`
+	HLSDuration      int64          `mapstructure:"hls_duration"`
+	HLSmaxTSCacheNum int          `mapstructure:"hls_max_ts_cache_num"`
+	HLSKeepAfterEnd  bool         `mapstructure:"hls_keep_after_end"`
+	APIAddr          string       `mapstructure:"api_addr"`
+	RedisAddr        string       `mapstructure:"redis_addr"`
+	RedisPwd         string       `mapstructure:"redis_pwd"`
+	ReadTimeout      int          `mapstructure:"read_timeout"`
+	WriteTimeout     int          `mapstructure:"write_timeout"`
+	EnableTLSVerify  bool         `mapstructure:"enable_tls_verify"`
+	GopNum           int          `mapstructure:"gop_num"`
+	JWT              JWT          `mapstructure:"jwt"`
+	Server           Applications `mapstructure:"server"`
 }
 
 // default config
 var defaultConf = ServerCfg{
-	ConfigFile:      "livego.yaml",
-	FLVArchive:      false,
-	RTMPNoAuth:      false,
-	RTMPAddr:        ":1935",
-	HTTPFLVAddr:     ":7001",
-	HLSAddr:         ":7002",
-	HLSKeepAfterEnd: false,
-	APIAddr:         ":8090",
-	WriteTimeout:    10,
-	ReadTimeout:     10,
-	EnableTLSVerify: true,
-	GopNum:          1,
+	ConfigFile:       "livego.yaml",
+	FLVArchive:       false,
+	RTMPNoAuth:       false,
+	RTMPAddr:         ":1935",
+	HTTPFLVAddr:      ":7001",
+	HLSAddr:          ":7002",
+	HLSDuration:      3000,
+	HLSmaxTSCacheNum: 3,
+	HLSKeepAfterEnd:  false,
+	APIAddr:          ":8090",
+	WriteTimeout:     10,
+	ReadTimeout:      10,
+	EnableTLSVerify:  true,
+	GopNum:           1,
 	Server: Applications{{
 		Appname:    "live",
 		Live:       true,
@@ -121,6 +125,8 @@ func initDefault() {
 	pflag.String("rtmp_addr", ":1935", "RTMP server listen address")
 	pflag.String("httpflv_addr", ":7001", "HTTP-FLV server listen address")
 	pflag.String("hls_addr", ":7002", "HLS server listen address")
+	pflag.Int64("hls_duration", 3000, "HLS ts time duration")
+	pflag.Int("hls_max_ts_cache_num", 3, "HLS max ts cache number")
 	pflag.String("api_addr", ":8090", "HTTP manage interface server listen address")
 	pflag.String("config_file", "livego.yaml", "configure filename")
 	pflag.String("level", "info", "Log level")

@@ -5,6 +5,8 @@ import (
 	"container/list"
 	"fmt"
 	"sync"
+
+	"github.com/gwuhaolin/livego/configure"
 )
 
 const (
@@ -27,7 +29,7 @@ func NewTSCacheItem(id string) *TSCacheItem {
 	return &TSCacheItem{
 		id:  id,
 		ll:  list.New(),
-		num: maxTSCacheNum,
+		num: configure.Config.GetInt("hls_max_ts_cache_num"),
 		lm:  make(map[string]TSItem),
 	}
 }

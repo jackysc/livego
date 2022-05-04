@@ -3,8 +3,9 @@ package hls
 import (
 	"bytes"
 	"fmt"
-	"github.com/gwuhaolin/livego/configure"
 	"time"
+
+	"github.com/gwuhaolin/livego/configure"
 
 	"github.com/gwuhaolin/livego/av"
 	"github.com/gwuhaolin/livego/container/flv"
@@ -191,7 +192,7 @@ func (source *Source) cut() {
 	newf := true
 	if source.btswriter == nil {
 		source.btswriter = bytes.NewBuffer(nil)
-	} else if source.btswriter != nil && source.stat.durationMs() >= duration {
+	} else if source.btswriter != nil && source.stat.durationMs() >= configure.Config.GetInt64("hls_duration") {
 		source.flushAudio()
 
 		source.seq++
